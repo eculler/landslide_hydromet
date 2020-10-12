@@ -1,0 +1,5 @@
+version: "3.8"
+volumes:
+  - $WORKDIR/data/landslide:/hydromet/data/landslide # Link landslide data
+  - $EXTDIR:/hydromet/data/precipitation # Link precipitation raw data
+  - $WORKDIR/data/precipitation:/hydromet/data/out   # Link output directory
