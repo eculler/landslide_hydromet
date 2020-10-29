@@ -11,4 +11,3 @@ ENV PATH /opt/conda/envs/hydrometenv/bin:$PATH
 RUN /bin/bash -c "source activate hydrometenv"
 
 COPY src /hydromet/src
-COPY gages_active.txt /hydromet/data/

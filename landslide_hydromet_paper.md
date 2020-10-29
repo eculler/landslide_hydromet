@@ -11,6 +11,9 @@ abstract: "Rainfall-triggered landslides result in numerous casualties and exten
 output:
   docx:
     output: output/landslide_hydromet_paper.docx
+    filter: 
+      - pandoc-crossref
+    citeproc: true
 
 bibliography: hydromet.bib
 ---
@@ -125,3 +128,5 @@ FIGURE 2: Cumulative precipitation comparison for select sites
 * Precipitation products differ greatly in measurement values for the same time and location
 * As a result, precipitation products differ in their ability to predict landslides
 * Implications for developing early warning systems for landslides across broad regions using remotely sensed precipitation
+
+# Bibliography
