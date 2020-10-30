@@ -8,6 +8,6 @@
 #SBATCH --output=hydromet.%j.out
 
 # Load modules
-module load singularity
+module load singularity/3.0.2
 
 # Run script

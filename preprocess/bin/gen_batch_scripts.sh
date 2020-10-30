@@ -41,7 +41,7 @@ cp ${WORKDIR}/preprocess/bin/${TEMPLATE} ${BATCHPATH}
 
 # Write command to start container, run python script
 cat >> ${BATCHPATH} << EOL
-singularity exec ${WORKDIR}/hydromet.img \\
+singularity exec ${WORKDIR}/hydrological.processes.202011.img \\
   conda run -n hydrometenv \\
   python ${SRCDIR}/landslide_precip.py \\
   ${DATADIR}/${PRECIP} \\
