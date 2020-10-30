@@ -1,16 +1,23 @@
-#!/opt/local/bin/bash
-# Configure paths
-WORKDIR=../.. #projects/elcu4811/landslide.hydromet
-DATADIR=scratch/summit/elcu4811/landslide.hydromet.data
-OUTDIR=projects/elcu4811/landslide.hydromet/out
-SRCDIR=${WORKDIR}/preprocess/src
-BATCHDIR=${OUTDIR}/batch
-
-mkdir -p $WORKDIR $DATADIR $OUTDIR $SRCDIR $BATCHDIR
+#!/bin/bash
 
 PRECIPNAME="$1"
 LOGLEVEL=info
+TEMPLATE="$2"
 
+# Configure paths
+WORKDIR=/projects/elcu4811/landslide.hydromet/landslide.hydromet.git
+DATADIR=/scratch/summit/elcu4811/landslide.hydromet.data
+OUTDIR=/projects/elcu4811/landslide.hydromet/landslide.hydromet.out/$PRECIPNAME
+SRCDIR=${WORKDIR}/preprocess/src
+BATCHDIR=${OUTDIR}/batch
+if [TEMPLATE==test]
+  TEMPLATE="batch_template_test.txt"
+else
+  TEMPLATE="batch_template.txt"
+fi
+mkdir -p $WORKDIR $DATADIR $OUTDIR $SRCDIR $BATCHDIR
+
+# Make batch script for each year
 for YEAR in {2014..2020}; do
 
 BATCHPATH=${BATCHDIR}/${PRECIPNAME}.${YEAR}.batch
@@ -30,7 +37,7 @@ case ${PRECIPNAME} in
 esac
 
 # Initialize file
-cp ${WORKDIR}/preprocess/bin/batch_template_test.txt ${BATCHPATH}
+cp ${WORKDIR}/preprocess/bin/${TEMPLATE} ${BATCHPATH}
 
 # Write command to start container, run python script
 cat >> ${BATCHPATH} << EOL
