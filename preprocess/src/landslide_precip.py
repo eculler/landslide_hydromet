@@ -8,7 +8,9 @@ import pandas as pd
 import sys
 import xarray as xr
 
-def pull_data(precip_path, landslide_path, out_path):
+def pull_data(precip_path, landslide_path, out_path,
+              lon_name='lon', lat_name='lat',
+              precip_name='precipitation', time_name='time'):
     # Log file paths
     logging.info('Landslide data at {}'.format(landslide_path))
     logging.info('Precipitation data at {}'.format(precip_path))
@@ -41,6 +43,8 @@ def pull_data(precip_path, landslide_path, out_path):
     logging.info('Opening {} precipitation files'.format(len(files)))
     logging.debug('Precipitation file names: \n' +
                   '\n    '.join(files))
+    if not files:
+        raise ValueError('No files at {}'.format(precip_path))
     precip = xr.open_mfdataset(
         files,
         combine='nested', concat_dim='time', coords='minimal',
@@ -48,10 +52,10 @@ def pull_data(precip_path, landslide_path, out_path):
 
     # Build KD-Tree
     logging.info('Building KD-Tree...')
-    xv, yv = np.meshgrid(precip.lon.values, precip.lat.values)
+    xv, yv = np.meshgrid(precip[lon_name].values, precip[lat_name].values)
     xv = xv.flatten()
     yv = yv.flatten()
-    xi, yi = np.indices((precip.sizes['lon'], precip.sizes['lat']))
+    xi, yi = np.indices((precip.sizes[lon_name], precip.sizes[lat_name]))
     xi = xi.flatten('F')
     yi = yi.flatten('F')
 
@@ -76,13 +80,13 @@ def pull_data(precip_path, landslide_path, out_path):
         ).to_csv(out_slide_path, mode='a', header=count==1, index_label='id')
 
         # Pull precipitation data
-        slide_precip = precip.sel(lon = xv[loc_i], lat = yv[loc_i])
+        slide_precip = precip[{lon_name: xi[loc_i], lat_name: yi[loc_i]}]
 
         # To DataFrame
-        slide_precip = slide_precip.chunk({'time': 'auto'})
+        slide_precip = slide_precip.chunk({time_name: 'auto'})
         slide_precip_df = pd.DataFrame(
-            {'precipitation': slide_precip.APCP.values},
-            index = slide_precip.time.values)
+            {'precipitation': slide_precip[precip_name].values},
+            index = slide_precip[time_name].values)
 
         # Add location identifier to the index
         slide_precip_df['id'] = i
@@ -96,7 +100,9 @@ def pull_data(precip_path, landslide_path, out_path):
 
 if __name__ == '__main__':
     # Get command line arguments
-    precip_path, landslide_path, out_path, log_level = sys.argv[1:]
+    precip_path, landslide_path, out_path = sys.argv[1:4]
+    lon_name, lat_name, precip_name, time_name = sys.argv[4:8]
+    log_level = sys.argv[8]
     log_level = getattr(logging, log_level.upper())
 
     # Initialize logging
@@ -119,4 +125,8 @@ if __name__ == '__main__':
     # Run data processing
     pull_data(precip_path=precip_path,
               landslide_path=landslide_path,
-              out_path=out_path)
+              out_path=out_path,
+              lon_name=lon_name,
+              lat_name=lat_name,
+              precip_name=precip_name,
+              time_name=time_name)

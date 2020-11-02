@@ -1,8 +1,10 @@
 #!/bin/bash
-
 PRECIPNAME="$1"
 LOGLEVEL=info
 TEMPLATE="$2"
+LON_NAME=lon
+LAT_NAME=lat
+TIME_NAME=time
 
 # Configure paths
 WORKDIR=/projects/elcu4811/landslide.hydromet/landslide.hydromet.git
@@ -24,15 +26,19 @@ BATCHPATH=${BATCHDIR}/${PRECIPNAME}.${YEAR}.batch
 case ${PRECIPNAME} in
   nldas)
     PRECIP="precipitation/NLDAS2/NLDAS_FORA0125_H.A${YEAR}\*.\*.002.grb.SUB.nc4"
+    PRECIP_NAME=APCP
     ;;
   imergf)
-    PRECIP="precipitation/IMERG.final/3B-HHR.MS.MRG.3IMERG.${YEAR}\*-S\*00-E005959.0030.V06B.HDF5.nc4"
+    PRECIP="precipitation/IMERG.final/3B-HHR.MS.MRG.3IMERG.${YEAR}\*-S\*.nc4"
+    PRECIP_NAME=precipitationCal
     ;;
   imerge)
-    PRECIP="precipitation/IMERG.early/3B-HHR-E.MS.MRG.3IMERG.${YEAR}\*-S\*00-E085959.0510.V06B.HDF5.nc4"
+    PRECIP="precipitation/IMERG.early/3B-HHR-E.MS.MRG.3IMERG.${YEAR}\*-S\*.nc4"
+    PRECIP_NAME=precipitationCal
     ;;
   mrms)
-    PRECIP="precipitation/MRMS.2min/mtarchive.geol.iastate.edu/${YEAR}/\*/\*/mrms/ncep/PrecipRate/"
+    PRECIP="precipitation/MRMS/"
+    PRECIP_NAME=precip
     ;;
 esac
 
@@ -47,6 +53,7 @@ singularity exec ${WORKDIR}/hydrological.processes.202011.img \\
   ${DATADIR}/${PRECIP} \\
   ${DATADIR}/landslide/landslides.csv \\
   ${OUTDIR}/${PRECIPNAME}.${YEAR}.csv \\
+  ${LON_NAME} ${LAT_NAME} ${PRECIP_NAME} ${TIME_NAME} \\
   ${LOGLEVEL}
 EOL
 
