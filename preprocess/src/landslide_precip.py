@@ -1,4 +1,5 @@
 from scipy.spatial import cKDTree
+import dask
 import datetime
 import glob
 import logging
@@ -41,14 +42,15 @@ def pull_data(precip_path, landslide_path, out_path,
     files = glob.glob(precip_path)
     files.sort()
     logging.info('Opening {} precipitation files'.format(len(files)))
-    logging.debug('Precipitation file names: \n' +
-                  '\n    '.join(files))
+    logging.debug('Precipitation file names: \n    ' +
+                  '\n    '.join(files[:10]))
     if not files:
         raise ValueError('No files at {}'.format(precip_path))
     precip = xr.open_mfdataset(
         files,
-        combine='nested', concat_dim='time', coords='minimal',
-        chunks={'lat': 10, 'lon': 10})
+        combine='nested', concat_dim=time_name,
+        data_vars='minimal', coords='minimal', compat='override',
+        parallel=True)#, chunks={time_name: 61})
 
     # Build KD-Tree
     logging.info('Building KD-Tree...')
@@ -83,7 +85,7 @@ def pull_data(precip_path, landslide_path, out_path,
         slide_precip = precip[{lon_name: xi[loc_i], lat_name: yi[loc_i]}]
 
         # To DataFrame
-        slide_precip = slide_precip.chunk({time_name: 'auto'})
+        #slide_precip = slide_precip.chunk({time_name: 'auto'})
         slide_precip_df = pd.DataFrame(
             {'precipitation': slide_precip[precip_name].values},
             index = slide_precip[time_name].values)
@@ -123,10 +125,11 @@ if __name__ == '__main__':
     logging.debug('Output path: {}'.format(out_path))
 
     # Run data processing
-    pull_data(precip_path=precip_path,
-              landslide_path=landslide_path,
-              out_path=out_path,
-              lon_name=lon_name,
-              lat_name=lat_name,
-              precip_name=precip_name,
-              time_name=time_name)
+    with dask.config.set(scheduler='threads'):
+        pull_data(precip_path=precip_path,
+                  landslide_path=landslide_path,
+                  out_path=out_path,
+                  lon_name=lon_name,
+                  lat_name=lat_name,
+                  precip_name=precip_name,
+                  time_name=time_name)

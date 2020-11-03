@@ -16,7 +16,7 @@ LAT_NAME=lat
 TIME_NAME=time
 
 # Build container
-cd ${LOCALWORKDIR} && docker build --tag=hydromet ${LOCALWORKDIR}
+#cd ${LOCALWORKDIR} && docker build --tag=hydromet ${LOCALWORKDIR}
 
 for YEAR in {2014..2020}; do
   case ${PRECIPNAME} in
