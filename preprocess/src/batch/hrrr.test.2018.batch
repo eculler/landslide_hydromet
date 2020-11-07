@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#SBATCH --nodes=1
+#SBATCH --time=00:30:00
+#SBATCH --partition=shas-testing
+#SBATCH --ntasks=1
+#SBATCH --job-name=hydromet
+#SBATCH --output=/projects/elcu4811/landslide.hydromet/log/hydromet.%j.out
+
+# Load modules
+module load singularity/3.6.4
+
+# Run script
+export BASH_ENV=/projects/elcu4811/landslide.hydromet/.bashrc
+singularity run --bind /scratch/summit /projects/elcu4811/landslide.hydromet/landslide.hydromet.git/preprocess/hydrological.processes.202011.sif bash -c \
+  'conda activate hydrometenv && python /projects/elcu4811/landslide.hydromet/landslide.hydromet.git/preprocess/src/landslide_precip.py /scratch/summit/elcu4811/landslide.hydromet.data/precipitation/HRRR/2018/201810\*/hrrrx_qpf_2018\*.grib2 /scratch/summit/elcu4811/landslide.hydromet.data/landslide/landslides.csv /projects/elcu4811/landslide.hydromet/landslide.hydromet.out/hrrr/hrrr.2018.csv x y Total_precipitation_surface_Mixed_intervals_Accumulation time pynio "+proj=lcc +lat_1=38.5 +lat_2=38.5 +lat_0=38.5 +lon_0=262.5 +x_0=0 +y_0=0 +a=6371229 +b=6371229 +units=m +no_defs" info'

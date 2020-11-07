@@ -1,6 +1,7 @@
 from scipy.spatial import cKDTree
 import dask
 import datetime
+import geopandas as gpd
 import glob
 import logging
 import numpy as np
@@ -11,7 +12,8 @@ import xarray as xr
 
 def pull_data(precip_path, landslide_path, out_path,
               lon_name='lon', lat_name='lat',
-              precip_name='precipitation', time_name='time'):
+              precip_name='precipitation', time_name='time',
+              engine='netcdf4', slide_crs="EPSG:4326", precip_crs=""):
     # Log file paths
     logging.info('Landslide data at {}'.format(landslide_path))
     logging.info('Precipitation data at {}'.format(precip_path))
@@ -36,6 +38,9 @@ def pull_data(precip_path, landslide_path, out_path,
     # Import landslide data
     logging.info('Importing landslide data from {}'.format(landslide_path))
     slide = pd.read_csv(landslide_path, index_col='id')
+    slide = gpd.GeoDataFrame(
+        slide, geometry=gpd.points_from_xy(slide.lon, slide.lat), 
+        crs=slide_crs)
 
     # Open precipitation dataset
     logging.info('Loading precipitation data...')
@@ -47,10 +52,14 @@ def pull_data(precip_path, landslide_path, out_path,
     if not files:
         raise ValueError('No files at {}'.format(precip_path))
     precip = xr.open_mfdataset(
-        files,
+        files, engine=engine,
         combine='nested', concat_dim=time_name,
         data_vars='minimal', coords='minimal', compat='override',
-        parallel=True)#, chunks={time_name: 61})
+        parallel=True)
+
+    # Reproject landslide data to match precipitation data
+    if precip_crs != slide_crs:
+        slide = slide.to_crs(precip_crs)
 
     # Build KD-Tree
     logging.info('Building KD-Tree...')
@@ -104,7 +113,8 @@ if __name__ == '__main__':
     # Get command line arguments
     precip_path, landslide_path, out_path = sys.argv[1:4]
     lon_name, lat_name, precip_name, time_name = sys.argv[4:8]
-    log_level = sys.argv[8]
+    engine, precip_crs = sys.argv[8:10]
+    log_level = sys.argv[10]
     log_level = getattr(logging, log_level.upper())
 
     # Initialize logging
@@ -123,6 +133,10 @@ if __name__ == '__main__':
     logging.debug('Precipitation path: {}'.format(precip_path))
     logging.debug('Landslide path: {}'.format(landslide_path))
     logging.debug('Output path: {}'.format(out_path))
+    logging.debug('Variable names: x - {}, y - {}, t = {}, P = {}'.format(
+                      lon_name, lat_name, time_name, precip_name))
+    logging.debug('Precipitation file engine: {}'.format(engine))
+    logging.debug('Precipitation CRS: {}'.format(precip_crs))
 
     # Run data processing
     with dask.config.set(scheduler='threads'):
@@ -132,4 +146,6 @@ if __name__ == '__main__':
                   lon_name=lon_name,
                   lat_name=lat_name,
                   precip_name=precip_name,
-                  time_name=time_name)
+                  time_name=time_name,
+                  engine=engine,
+                  precip_crs=precip_crs)
