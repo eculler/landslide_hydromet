@@ -5,6 +5,8 @@ TEMPLATE="$2"
 LON_NAME=lon
 LAT_NAME=lat
 TIME_NAME=time
+X_NAME=$LON_NAME
+Y_NAME=$LAT_NAME
 PRECIPCRS='EPSG:4326'
 ENGINE=netcdf4
 
@@ -50,12 +52,13 @@ case ${PRECIPNAME} in
     PRECIP_NAME=precip
     ;;
   hrrr)
-    PRECIP="precipitation/HRRR/${YEAR}/${YEAR}${MONTH}\*/hrrrx_qpf_${YEAR}\*.grib2"
-    PRECIP_NAME="Total_precipitation_surface_Mixed_intervals_Accumulation"
+    PRECIP="precipitation/HRRR/${YEAR}/${YEAR}${MONTH}\*/hrrrx_qpf_${YEAR}${MONTH}\*.grib2"
+    PRECIP_NAME="APCP_P8_L1_GLC0_acc"
     ENGINE="pynio"
-    PRECIPCRS="+proj=lcc +lat_1=38.5 +lat_2=38.5 +lat_0=38.5 +lon_0=262.5 +x_0=0 +y_0=0 +a=6371229 +b=6371229 +units=m +no_defs"
-    LON_NAME="x"
-    LAT_NAME="y"
+    LAT_NAME="gridlat_0"
+    TIME_NAME="forecast_time0"
+    X_NAME="xgrid_0"
+    Y_NAME="ygrid_0"
 esac
 
 # Initialize file
@@ -65,7 +68,7 @@ cp ${SRCDIR}/${TEMPLATE_PATH} ${BATCHPATH}
 # Write command to start container, run python script
 cat >> ${BATCHPATH} << EOL
 singularity run --bind /scratch/summit ${WORKDIR}/hydrological.processes.202011.sif bash -c \\
-  'conda activate hydrometenv && python ${SRCDIR}/landslide_precip.py ${DATADIR}/${PRECIP} ${DATADIR}/landslide/landslides.csv ${OUTDIR}/${PRECIPNAME}.${YEAR}.csv ${LON_NAME} ${LAT_NAME} ${PRECIP_NAME} ${TIME_NAME} ${ENGINE} "${PRECIPCRS}" ${LOGLEVEL}'
+  'conda activate hydrometenv && python ${SRCDIR}/landslide_precip.py ${DATADIR}/${PRECIP} ${DATADIR}/landslide/landslides.verified.csv ${OUTDIR}/${PRECIPNAME}.${YEAR}.csv ${LON_NAME} ${LAT_NAME} ${PRECIP_NAME} ${TIME_NAME} ${X_NAME} ${Y_NAME} ${ENGINE} "${PRECIPCRS}" ${LOGLEVEL}'
 EOL
 
 done

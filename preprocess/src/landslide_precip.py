@@ -13,7 +13,9 @@ import xarray as xr
 def pull_data(precip_path, landslide_path, out_path,
               lon_name='lon', lat_name='lat',
               precip_name='precipitation', time_name='time',
-              engine='netcdf4', slide_crs="EPSG:4326", precip_crs=""):
+              engine='netcdf4', slide_crs="EPSG:4326", precip_crs="",
+              x_name='xgrid_0', y_name='ygrid_0',
+              reproject=False):
     # Log file paths
     logging.info('Landslide data at {}'.format(landslide_path))
     logging.info('Precipitation data at {}'.format(precip_path))
@@ -37,9 +39,9 @@ def pull_data(precip_path, landslide_path, out_path,
 
     # Import landslide data
     logging.info('Importing landslide data from {}'.format(landslide_path))
-    slide = pd.read_csv(landslide_path, index_col='id')
+    slide = pd.read_csv(landslide_path, index_col='slide.id')
     slide = gpd.GeoDataFrame(
-        slide, geometry=gpd.points_from_xy(slide.lon, slide.lat), 
+        slide, geometry=gpd.points_from_xy(slide.lon, slide.lat),
         crs=slide_crs)
 
     # Open precipitation dataset
@@ -58,18 +60,27 @@ def pull_data(precip_path, landslide_path, out_path,
         parallel=True)
 
     # Reproject landslide data to match precipitation data
-    if precip_crs != slide_crs:
+    if reproject:
         slide = slide.to_crs(precip_crs)
 
     # Build KD-Tree
     logging.info('Building KD-Tree...')
-    xv, yv = np.meshgrid(precip[lon_name].values, precip[lat_name].values)
+    if engine == 'netcdf4':
+        xv, yv = np.meshgrid(precip[lon_name].values, precip[lat_name].values)
+        xi, yi = np.indices((precip.sizes[lon_name], precip.sizes[lat_name]))
+    else:
+        xv = precip[lon_name].values
+        yv = precip[lat_name].values
+        xi, yi = np.indices((precip.sizes[x_name], precip.sizes[y_name]))
+        logging.debug(xv)
+        logging.debug(yv)
+        logging.debug(xi)
+        logging.debug(yi)
+
     xv = xv.flatten()
     yv = yv.flatten()
-    xi, yi = np.indices((precip.sizes[lon_name], precip.sizes[lat_name]))
     xi = xi.flatten('F')
     yi = yi.flatten('F')
-
     kdt = cKDTree(np.dstack((xv, yv))[0])
 
     # Pull data for landslide locations
@@ -77,6 +88,14 @@ def pull_data(precip_path, landslide_path, out_path,
     for i, row in slide.iterrows():
         logging.info('Processing landslide {}, id {}'.format(count, i))
 
+        # Skip out-of-bounds landslides
+        if (row.lon > np.amax(precip[lon_name].values) or
+            row.lon < np.amin(precip[lon_name].values) or
+            row.lat > np.amax(precip[lat_name].values) or
+            row.lat < np.amin(precip[lat_name].values)):
+            count +=1
+            logging.info('Landslide out of bounds')
+            continue
         # Find index of closest location
         loc_i = kdt.query((row.lon, row.lat))[1]
         logging.debug('Location index: {}'.format(loc_i))
@@ -91,7 +110,7 @@ def pull_data(precip_path, landslide_path, out_path,
         ).to_csv(out_slide_path, mode='a', header=count==1, index_label='id')
 
         # Pull precipitation data
-        slide_precip = precip[{lon_name: xi[loc_i], lat_name: yi[loc_i]}]
+        slide_precip = precip[{x_name: xi[loc_i], y_name: yi[loc_i]}]
 
         # To DataFrame
         #slide_precip = slide_precip.chunk({time_name: 'auto'})
@@ -100,21 +119,22 @@ def pull_data(precip_path, landslide_path, out_path,
             index = slide_precip[time_name].values)
 
         # Add location identifier to the index
-        slide_precip_df['id'] = i
-        slide_precip_df = slide_precip_df.set_index(['id'], append=True)
+        slide_precip_df['slide.id'] = i
+        slide_precip_df = slide_precip_df.set_index(['slide.id'], append=True)
 
         # Write to file
         slide_precip_df.to_csv(
-            out_path, mode='a', header=count==1, index_label=('datetime', 'id'))
+            out_path, mode='a', header=count==1,
+            index_label=('datetime', 'slide.id'))
         logging.debug(slide_precip_df.sort_index().head())
         count += 1
 
 if __name__ == '__main__':
     # Get command line arguments
     precip_path, landslide_path, out_path = sys.argv[1:4]
-    lon_name, lat_name, precip_name, time_name = sys.argv[4:8]
-    engine, precip_crs = sys.argv[8:10]
-    log_level = sys.argv[10]
+    lon_name, lat_name, precip_name, time_name, x_name, y_name = sys.argv[4:10]
+    engine, precip_crs = sys.argv[10:12]
+    log_level = sys.argv[12]
     log_level = getattr(logging, log_level.upper())
 
     # Initialize logging
@@ -147,5 +167,7 @@ if __name__ == '__main__':
                   lat_name=lat_name,
                   precip_name=precip_name,
                   time_name=time_name,
+                  x_name=x_name,
+                  y_name=y_name,
                   engine=engine,
                   precip_crs=precip_crs)

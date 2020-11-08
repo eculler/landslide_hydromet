@@ -14,13 +14,15 @@ LOGLEVEL=debug
 LON_NAME=lon
 LAT_NAME=lat
 TIME_NAME=time
+X_NAME=$LON_NAME
+Y_NAME=$LAT_NAME
 PRECIPCRS='EPSG:4326'
 ENGINE=netcdf4
 
 # Build container
 #cd ${LOCALWORKDIR} && docker build --tag=hydromet ${LOCALWORKDIR}
 
-for YEAR in {2014..2020}; do
+for YEAR in {2019..2019}; do
   case ${PRECIPNAME} in
     nldas)
       PRECIP="precipitation/NLDAS2/NLDAS_FORA0125_H.A${YEAR}\*.\*.002.grb.SUB.nc4"
@@ -39,12 +41,14 @@ for YEAR in {2014..2020}; do
       PRECIP_NAME=precip
       ;;
     hrrr)
-      PRECIP="precipitation/HRRR/2019/20190101/hrrrx_qpf_20190101\*.grib2"
-      PRECIP_NAME="Total_precipitation_surface_Mixed_intervals_Accumulation"
+      PRECIP="precipitation/HRRR/hrrr_qpf_${YEAR}/${YEAR}0101/hrrrx_qpf_${YEAR}0101\*.grib2"
+      PRECIP_NAME="APCP_P8_L1_GLC0_acc"
       ENGINE="pynio"
-      PRECIPCRS="+proj=lcc +lat_1=38.5 +lat_2=38.5 +lat_0=38.5 +lon_0=262.5 +x_0=0 +y_0=0 +a=6371229 +b=6371229 +units=m +no_defs"
-      LON_NAME="x"
-      LAT_NAME="y"
+      LON_NAME="gridlon_0"
+      LAT_NAME="gridlat_0"
+      TIME_NAME="forecast_time0"
+      X_NAME="xgrid_0"
+      Y_NAME="ygrid_0"
       ;;
   esac
 
@@ -58,12 +62,14 @@ for YEAR in {2014..2020}; do
     conda run -n hydrometenv \
     python ${DOCKERSRCDIR}/landslide_precip.py \
     ${DOCKERDATADIR}/${PRECIP} \
-    ${DOCKERDATADIR}/landslide/landslides.csv \
+    ${DOCKERDATADIR}/landslide/landslides.verified.csv \
     ${DOCKEROUTDIR}/${PRECIPNAME}.${YEAR}.csv \
     ${LON_NAME} \
     ${LAT_NAME} \
     ${PRECIP_NAME} \
     ${TIME_NAME} \
+    ${X_NAME} \
+    ${Y_NAME} \
     ${ENGINE} \
     "${PRECIPCRS}" \
     ${LOGLEVEL}
