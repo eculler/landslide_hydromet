@@ -14,6 +14,8 @@ LOGLEVEL=debug
 LON_NAME=lon
 LAT_NAME=lat
 TIME_NAME=time
+PRECIPCRS='EPSG:4326'
+ENGINE=netcdf4
 
 # Build container
 #cd ${LOCALWORKDIR} && docker build --tag=hydromet ${LOCALWORKDIR}
@@ -29,12 +31,20 @@ for YEAR in {2014..2020}; do
       PRECIP_NAME=precipitationCal
       ;;
     imerge)
-      PRECIP="precipitation/IMERGE/${YEAR}/3B-HHR-E.MS.MRG.3IMERG.${YEAR}1001-S\*.nc4"
+      PRECIP="precipitation/IMERGE/${YEAR}/3B-HHR-E.MS.MRG.3IMERG.${YEAR}\*-S\*.nc4"
       PRECIP_NAME=precipitationCal
       ;;
     mrms)
       PRECIP="precipitation/MRMS/"
       PRECIP_NAME=precip
+      ;;
+    hrrr)
+      PRECIP="precipitation/HRRR/2019/20190101/hrrrx_qpf_20190101\*.grib2"
+      PRECIP_NAME="Total_precipitation_surface_Mixed_intervals_Accumulation"
+      ENGINE="pynio"
+      PRECIPCRS="+proj=lcc +lat_1=38.5 +lat_2=38.5 +lat_0=38.5 +lon_0=262.5 +x_0=0 +y_0=0 +a=6371229 +b=6371229 +units=m +no_defs"
+      LON_NAME="x"
+      LAT_NAME="y"
       ;;
   esac
 
@@ -54,5 +64,7 @@ for YEAR in {2014..2020}; do
     ${LAT_NAME} \
     ${PRECIP_NAME} \
     ${TIME_NAME} \
+    ${ENGINE} \
+    "${PRECIPCRS}" \
     ${LOGLEVEL}
 done
