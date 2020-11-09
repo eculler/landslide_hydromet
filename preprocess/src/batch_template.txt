@@ -5,7 +5,7 @@
 #SBATCH --partition=shas
 #SBATCH --account ucb-summit-hyd
 #SBATCH --qos condo
-#SBATCH --ntasks=4
+#SBATCH --ntasks=1
 #SBATCH --job-name=hydromet
 #SBATCH --output=/projects/elcu4811/landslide.hydromet/log/hydromet.%j.out
 

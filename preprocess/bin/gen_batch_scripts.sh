@@ -33,8 +33,9 @@ mkdir -p $WORKDIR $OUTDIR $BATCHDIR
 
 # Make batch script for each year
 for ((YEAR=STARTYEAR; YEAR<=ENDYEAR; YEAR++)); do
+  for ((MONTH=1; MONTH<=12; MONTH++)); do
 
-BATCHPATH=${BATCHDIR}/${PRECIPNAME}.${TEMPLATE}.${YEAR}.batch
+BATCHPATH=${BATCHDIR}/${PRECIPNAME}.${TEMPLATE}.${YEAR}${MONTH}.batch
 case ${PRECIPNAME} in
   nldas)
     PRECIP="precipitation/NLDAS2/NLDAS_FORA0125_H.A${YEAR}${MONTH}\*.\*.002.grb.SUB.nc4"
@@ -74,4 +75,5 @@ singularity run --bind /scratch/summit ${WORKDIR}/hydrological.processes.202011.
   'conda activate hydrometenv && python ${SRCDIR}/landslide_precip.py ${DATADIR}/${PRECIP} ${DATADIR}/landslide/landslides.verified.csv ${OUTDIR}/${PRECIPNAME}.${YEAR}.csv ${LON_NAME} ${LAT_NAME} ${PRECIP_NAME} ${TIME_NAME} ${X_NAME} ${Y_NAME} ${TO360} ${ENGINE} "${PRECIPCRS}" ${LOGLEVEL}'
 EOL
 
+done
 done
