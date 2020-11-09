@@ -16,13 +16,14 @@ LAT_NAME=lat
 TIME_NAME=time
 X_NAME=$LON_NAME
 Y_NAME=$LAT_NAME
+TO360=0
 PRECIPCRS='EPSG:4326'
 ENGINE=netcdf4
 
 # Build container
 #cd ${LOCALWORKDIR} && docker build --tag=hydromet ${LOCALWORKDIR}
 
-for YEAR in {2019..2019}; do
+for YEAR in {2018..2018}; do
   case ${PRECIPNAME} in
     nldas)
       PRECIP="precipitation/NLDAS2/NLDAS_FORA0125_H.A${YEAR}\*.\*.002.grb.SUB.nc4"
@@ -41,14 +42,14 @@ for YEAR in {2019..2019}; do
       PRECIP_NAME=precip
       ;;
     hrrr)
-      PRECIP="precipitation/HRRR/hrrr_qpf_${YEAR}/${YEAR}0101/hrrrx_qpf_${YEAR}0101\*.grib2"
-      PRECIP_NAME="APCP_P8_L1_GLC0_acc"
-      ENGINE="pynio"
-      LON_NAME="gridlon_0"
-      LAT_NAME="gridlat_0"
-      TIME_NAME="forecast_time0"
-      X_NAME="xgrid_0"
-      Y_NAME="ygrid_0"
+      PRECIP="precipitation/HRRR/hrrr_qpf_${YEAR}/${YEAR}1013/hrrrx_qpf_${YEAR}1013\*.grib2"
+      PRECIP_NAME="tp"
+      ENGINE="cfgrib"
+      LON_NAME="longitude"
+      LAT_NAME="latitude"
+      X_NAME="x"
+      Y_NAME="y"
+      TO360=1
       ;;
   esac
 
@@ -70,6 +71,7 @@ for YEAR in {2019..2019}; do
     ${TIME_NAME} \
     ${X_NAME} \
     ${Y_NAME} \
+    ${TO360} \
     ${ENGINE} \
     "${PRECIPCRS}" \
     ${LOGLEVEL}

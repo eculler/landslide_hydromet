@@ -3,7 +3,9 @@ channels:
   - conda-forge
 dependencies:
   - bokeh
+  - cfgrib
   - dask
+  - eccodes==2.18.0-hc7b4307_1
   - fiona
   - geopandas
   - matplotlib
