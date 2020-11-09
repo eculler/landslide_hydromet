@@ -22,7 +22,14 @@ bibliography: hydromet.bib
 
 In spite of the destructive nature of landslides, these events are challenging to forecast [@kirschbaumSatelliteBasedAssessmentRainfallTriggered2018]. There are many sources of uncertainty that contribute to poor landslide predictions such as anthropogenic modifications to the area and the subsurface structure of the slope. However, perhaps the largest source of uncertainty in landslide probability estimates, is hydrologic uncertainty, here defined as uncertainty in the volume and spatial distribution of both antecedent soil moisture and precipitation during and immediately preceding the event [@chowdhuryUncertaintiesRainfallinducedLandslide2002]. The key challenge is the wide range of values represented in different available precipitation datasets ranging across in situ observations, remotely sensed retrievals, and numerical weather prediction models.  The goal of this chapter is to investigate the role of precipitation uncertainty, and subsequently the uncertainty in modeled soil saturation, in the uncertainty of a contributing to landslide probability.
 
-# Background
+## Categories of precipitation measurement
+
+
+
+* Rain gauges are typically considered reference measurements because they the most direct measurement of precipitation [@tapiadorGlobalPrecipitationMeasurement2012a]. Gauges cover a small proportion of land area and vary greatly in density, leading to poor performance in identifying extreme events that can easily miss every gauge. As a result, many precipitation products used gauge measurements to correct biases in higher-resolution indirect measurements.
+* Radar: 
+* Microwave satellite
+* Numerical weather prediction
 
 ## Precipitation product comparisons
 
@@ -30,7 +37,7 @@ In spite of the destructive nature of landslides, these events are challenging t
 
 @adlerIntercomparisonGlobalPrecipitation2001 similarly analyzed 31 gauge-based, satellite-based, model-based, and climatological datasets, comparing monthly precipitation, precipitation by latitude, and inter-annual change.  They found that 'quasi-standard' products, e.g. those like the Global Precipitation Measurement mission (GPM) [@houGlobalPrecipitationMeasurement2014] that have undergone substantial testing, perform better. Additionally, they found that products incorporating both in situ and satellite information (e.g. the Global Precipitation Climatology Project [GPCP] [@adlerVersion2GlobalPrecipitation2003a]) perform better than products based on a single data source.
 
-## Intercomparison of extreme precipitation
+## Inter-comparison of extreme precipitation
 
  Of the past studies I was able to find, all focused on metrics like total annual or monthly volume and variability. A few looked at extreme precipitation indicators such as 90th percentile precipitation, extreme 1-day precipitation and maximum number of consecutive wet days, but these measures are meant to capture large storms that happen on at least an annual basis rather than storms that rise to the level of a natural disaster [@sunReviewGlobalPrecipitation2018; @manzanasPrecipitationVariabilityTrends2014]. Because this study is focusing on rainfall-triggered landslides, it will focus instead on the total storm depth, duration, average intensity, and peak intensity of some of the most extreme precipitation in North America. 
 
@@ -48,7 +55,15 @@ FIGURE 1: map of sites with overlaid graphs showing precipitation product compar
 
 ## Precipitation product selection
 
-TABLE 1: precipitation products
+| Precipitation product                                        | Description                                                  | Spatial Resolution | Temporal resolution | Typical Latency                    |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------ | ------------------- | ---------------------------------- |
+| Integrated Multi-satellitE Retrievals for  Global precipitation measurement (IMERG) early run [@houGlobalPrecipitationMeasurement2014] | Global network of satellites unified by measurements from a single reference radar/radiometer satellite. | $.1^o$ (~10 km)    | 30 minutes          | 4 hours                            |
+| Integrated Multi-satellitE Retrievals for  Global precipitation measurement (IMERG) final run [@houGlobalPrecipitationMeasurement2014] | In addition to the satellite data included in the IMERG early run, the final run includes late-arriving microwave overpasses, monthly gauge-based adjustments, and an algorithm that interpolates forward as well as backward in time. | $.1^o$ (~10 km)    | 30 minutes          | 3.5 months                         |
+| Multi-Radar Multi-Sensor (MRMS) [@zhangMultiRadarMultiSensorMRMS2015] | Integrates data from radars, satellites, precipitation gages, and other sensors to provide real-time decision support | 1 km               | 2 minutes           | < 5 minutes                        |
+| National Land Data Assimilation System version 2 (NLDAS-2) forcing  [@xiaContinentalscaleWaterEnergy2012] | Disaggregation of Climate Prediction Center  daily precipitation using bias-corrected radar | $.125^o$ (~ 12 km) | 1 hour              | 4 days                             |
+| NOAA High-Resolution Rapid Refresh (HRRR) model [@alexanderHourlyUpdatedUS2016] | Numerical Weather Prediction with radar assimilation.        | $3$ km             | 1 hour              | 1-36 hour forecasts updated hourly |
+
+: 3 Precipitation products that will be used to characterize the degree of hydrologic uncertainty present immediately before and during landslide events {#tbl:products}
 
 ## Identify storm events
 
