@@ -1,6 +1,6 @@
 #!/bin/bash
 PRECIPNAME="$1"
-LOGLEVEL=info
+LOGLEVEL=debug
 TEMPLATE="$2"
 LON_NAME=lon
 LAT_NAME=lat
