@@ -14,7 +14,7 @@ def pull_data(precip_path, landslide_path, out_path,
               lon_name='lon', lat_name='lat',
               precip_name='precipitation', time_name='time',
               engine='netcdf4', slide_crs="EPSG:4326", precip_crs="",
-              x_name='xgrid_0', y_name='ygrid_0',
+              x_name='xgrid_0', y_name='ygrid_0', to_360=False,
               reproject=False):
     # Log file paths
     logging.info('Landslide data at {}'.format(landslide_path))
@@ -57,7 +57,13 @@ def pull_data(precip_path, landslide_path, out_path,
         files, engine=engine,
         combine='nested', concat_dim=time_name,
         data_vars='minimal', coords='minimal', compat='override',
-        parallel=True)
+        parallel=False)
+    if to_360:
+        precip[lon_name] = precip[lon_name] - 360
+        precip = precip.isel(step=0)
+    logging.debug(precip)
+    logging.debug(precip.time)
+    logging.debug(precip.step)
 
     # Reproject landslide data to match precipitation data
     if reproject:
@@ -72,10 +78,6 @@ def pull_data(precip_path, landslide_path, out_path,
         xv = precip[lon_name].values
         yv = precip[lat_name].values
         xi, yi = np.indices((precip.sizes[x_name], precip.sizes[y_name]))
-        logging.debug(xv)
-        logging.debug(yv)
-        logging.debug(xi)
-        logging.debug(yi)
 
     xv = xv.flatten()
     yv = yv.flatten()
@@ -95,6 +97,7 @@ def pull_data(precip_path, landslide_path, out_path,
             row.lat < np.amin(precip[lat_name].values)):
             count +=1
             logging.info('Landslide out of bounds')
+            logging.info('Location: {}, {}'.format(row.lon, row.lat))
             continue
         # Find index of closest location
         loc_i = kdt.query((row.lon, row.lat))[1]
@@ -133,8 +136,9 @@ if __name__ == '__main__':
     # Get command line arguments
     precip_path, landslide_path, out_path = sys.argv[1:4]
     lon_name, lat_name, precip_name, time_name, x_name, y_name = sys.argv[4:10]
-    engine, precip_crs = sys.argv[10:12]
-    log_level = sys.argv[12]
+    to_360, engine, precip_crs = sys.argv[10:13]
+    to_360 = bool(to_360)
+    log_level = sys.argv[13]
     log_level = getattr(logging, log_level.upper())
 
     # Initialize logging
@@ -169,5 +173,6 @@ if __name__ == '__main__':
                   time_name=time_name,
                   x_name=x_name,
                   y_name=y_name,
+                  to_360=to_360,
                   engine=engine,
                   precip_crs=precip_crs)

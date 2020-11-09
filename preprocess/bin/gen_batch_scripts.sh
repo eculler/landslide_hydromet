@@ -7,6 +7,7 @@ LAT_NAME=lat
 TIME_NAME=time
 X_NAME=$LON_NAME
 Y_NAME=$LAT_NAME
+TO360=0
 PRECIPCRS='EPSG:4326'
 ENGINE=netcdf4
 
@@ -59,6 +60,8 @@ case ${PRECIPNAME} in
     TIME_NAME="forecast_time0"
     X_NAME="xgrid_0"
     Y_NAME="ygrid_0"
+    TO360=1
+    ;;
 esac
 
 # Initialize file
@@ -68,7 +71,7 @@ cp ${SRCDIR}/${TEMPLATE_PATH} ${BATCHPATH}
 # Write command to start container, run python script
 cat >> ${BATCHPATH} << EOL
 singularity run --bind /scratch/summit ${WORKDIR}/hydrological.processes.202011.sif bash -c \\
-  'conda activate hydrometenv && python ${SRCDIR}/landslide_precip.py ${DATADIR}/${PRECIP} ${DATADIR}/landslide/landslides.verified.csv ${OUTDIR}/${PRECIPNAME}.${YEAR}.csv ${LON_NAME} ${LAT_NAME} ${PRECIP_NAME} ${TIME_NAME} ${X_NAME} ${Y_NAME} ${ENGINE} "${PRECIPCRS}" ${LOGLEVEL}'
+  'conda activate hydrometenv && python ${SRCDIR}/landslide_precip.py ${DATADIR}/${PRECIP} ${DATADIR}/landslide/landslides.verified.csv ${OUTDIR}/${PRECIPNAME}.${YEAR}.csv ${LON_NAME} ${LAT_NAME} ${PRECIP_NAME} ${TIME_NAME} ${X_NAME} ${Y_NAME} ${TO360} ${ENGINE} "${PRECIPCRS}" ${LOGLEVEL}'
 EOL
 
 done
