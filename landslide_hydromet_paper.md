@@ -89,34 +89,51 @@ FIGURE 1: map of sites with overlaid graphs showing precipitation product compar
 
 ### What are some of the ways in which precipitation measurements differ among different products at select sites?
 
-FIGURE 2: Cumulative precipitation comparison for select sites
+* The precipitation measurements  differ substantially in correlation, cumulative volume, and landslide-triggering storm volume.
+* Example sites in @fig:cumultative demonstrate some different degrees and types of variation that occurred at various sites.
+*  As shown in @fig:cumulative,  products that share data sources such as the IMERG products are sometimes but not always more similar to each other than to other products.
 
-
+![Cumulative precipitation measurements at selected landslide sites for the 30 days before the event. The precipitation is variable across the different products, and the selected sites each demonstrate diverse types of variability. Panel (a) shows a site where no landslide-triggering precipitation was detected by any product, suggesting a location error in the landslide record. In panel (b), the IMERG Early product reports nearly 50mm less cumulative precipitation leading into the landslide-triggering storm, but then makes up the difference by detecting much more precipitation immediately before the landslide. Panel (c) shows similar measurements among all products while in panel (d) there is a wide spread of approximately two-thirds the maximum total amount of precipitation. Finally, in panel (e) all products are well correlated, but the volumes do not match.](example_landslide_precipitation.png){#fig:cumulative}
 
 ## Precipitation comparison for landslide-triggering storms
 
+### Is there consistent bias among precipitation products?
+
+* Generally, the IMERG products have higher day-of-landslide precipitation rank than MRMS which has higher rank than NLDAS-2
+* IMERG Early has by some 300mm the highest precipitation measurements in millimeters.
+* The range of z-scores for each product is comparable, suggesting that each product is an outlier at some sites
+
+![Rank and z-score for day-of-landslide precipitation as measured by each product. The IMERG products tend to have higher rank than MRMS, which typically exceeds NLDAS-2 measurements. The z-scores reflect the same order, but also a similar range of variability across all products. ](summary_statistic-1605241421850.png)
+
 ### How does each precipitation product capture key elements of landslide-triggering storms?
 
-* FIGURE 3: Scatter volume, intensity, frequency, and peak intensity for each product against the ensemble mean
+![Storm characteristics as measured by each product along with trend lines. The IMERG products measure higher peak hourly intensities, which is likely at least partially due to the shorter 30-minute time step. The higher peak intensities are also reflected in longer return periods. In general there appears to be good agreement among products on the depth and duration of storms, with the exception of outlying low measurements.](scatter_ensemble_mean.png)
+
 * TABLE 2: Bias and variability for volume and intensity for each product; for exact locations only; and for matched spatial/temporal/both resolutions
 
-### Can peak intensity account for relatively high frequency storms causing landslides?
+### Can peak intensity account for relatively high return period storms causing landslides?
 
-* FIGURE 4: Precipitation frequency vs. peak intensity for landslide-triggering storm by site by product
+![Peak intensity vs. storm return period. There appears to be a positive correlation between return period and peak intensity, but this relationship drops off for most products among the higher return periods.](frequency_peak.png)
 
 ### How does each product compare if it were used to predict landslides using an industry standard method of intensity-duration curves?
 
-* FIGURE 5: Example Intensity-Duration Threshold with multiple precipitation products plotted on top, landslide-triggering events in bold
+* These models tend to perform better using MRMS or NLDAS-2 data than using either IMERG product.
+
+  * The IMERG products seem to be more sensitive to both high intensity precipitation and low intensity precipitation
+  * The low intensity precipitation may be erroneous noise slightly above the 1mm threshold that causes the storm detection algorithm to select too long of a storm in some cases.
+  * Artificially lengthened storms would be expected to have lower intensity values for the whole storm.
+
+* The choice of model does not appear to make as much difference in performance as the choice of precipitation measurement source.
+
+* All models have a better hit ratio when using only verified landslide sites.
+
+  
+
+![Each storm in the precipitation record and established global or climactic Intensity-Duration Thresholds. Landslide-triggering storms are marked. It appears that these models generally perform better when using MRMS or NLDAS-2 data, since the IMERG products detect a larger number of low intensity values for landslide-triggering storms.](intensity_duration.png)
+
+![](intensity_duration_verified.png)
+
 * TABLE 2: True positives, true negatives, false positives, false negatives, and threat score for each product and threshold (For exact locations only  and matched resolutions in parentheses)
-
-## Location accuracy
-
-### Are comparison results affected by location accuracy?
-
-* FIGURE 6: Scatter volume, intensity, frequency, and peak intensity for each product for exact locations only
-* TABLE 1
-* FIGURE 7: Intensity-Duration Threshold example for exact locations only
-* TABLE 2
 
 ## Resolution
 
