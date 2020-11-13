@@ -56,7 +56,7 @@ In spite of the destructive nature of landslides, these events are challenging t
 
 @sunReviewGlobalPrecipitation2018 reviewed 30 gauge-based, satellite-based, and reanalysis global precipitation products, comparing annual precipitation estimates, 90th percentile of daily precipitation, systematic and random error for daily precipitation, and regional differences in performance. They found a great deal of variability even within the same class of product (e.g. a deviation of 300 mm in annual precipitation for some). They conclude that cross validating across multiple datasets is crucial to account for errors, and that the placement and density of gauges accounts for many of the errors in gauge-based or gauge-corrected products. 
 
-@adlerIntercomparisonGlobalPrecipitation2001 similarly analyzed 31 gauge-based, satellite-based, model-based, and climatological datasets, comparing monthly precipitation, precipitation by latitude, and inter-annual change.  They found that 'quasi-standard' products, e.g. those like the Global Precipitation Measurement mission (GPM) [@houGlobalPrecipitationMeasurement2014] that have undergone substantial testing, perform better. Additionally, they found that products incorporating both in situ and satellite information (e.g. the Global Precipitation Climatology Project [GPCP] [@adlerVersion2GlobalPrecipitation2003a]) perform better than products based on a single data source.
+@adlerIntercomparisonGlobalPrecipitation2001 similarly analyzed 31 gauge-based, satellite-based, model-based, and climatological datasets, comparing monthly precipitation, precipitation by latitude, and inter-annual change.  They found that 'quasi-standard' products, e.g. those like the Global Precipitation Measurement mission (GPM) [@houGlobalPrecipitationMeasurement2014] that have undergone substantial testing, perform better. Additionally, they found that products incorporating both in situ and satellite information (e.g. the Global Precipitation Climatology Project [GPCP] [@adlerVersion2GlobalPrecipitation2003]) perform better than products based on a single data source.
 
 ## Inter-comparison of extreme precipitation
 
@@ -72,7 +72,7 @@ In spite of the destructive nature of landslides, these events are challenging t
 
 ## Study domain and site selection
 
-FIGURE 1: map of sites with overlaid graphs showing precipitation product comparison for select sites for ‘typical' storms
+![Map of all landslide sites colored by whether or not the location was verified using aerial satellite imagery.](/Users/elsaculler/Documents/research/landslide.hydromet.git/landslide_hydromet_paper.assets/site_map.png)
 
 ## Precipitation product selection
 
@@ -103,7 +103,7 @@ FIGURE 1: map of sites with overlaid graphs showing precipitation product compar
 
 ## Precipitation comparison for use in Intensity-Duration Thresholds
 
-* Intensity-Duration thresholds are simple landslide models whereby a threshold is defined as a power law of the storm duration, and raw or normalized intensities above the threshold predict a landslide. Thresholds were obtained from [@guzzettiRainfallIntensityDuration2008a], who compiled them from the literature. Thresholds were used on applicable subsets of the data based on climate or other conditions.
+* Intensity-Duration thresholds are simple landslide models whereby a threshold is defined as a power law of the storm duration, and raw or normalized intensities above the threshold predict a landslide. Thresholds were obtained from [@guzzettiRainfallIntensityDuration2008], who compiled them from the literature. Thresholds were used on applicable subsets of the data based on climate or other conditions.
 * Computed the hit ratio, false alarm ratio, and threat score for each product and threshold.
 
 # Results
@@ -113,10 +113,10 @@ FIGURE 1: map of sites with overlaid graphs showing precipitation product compar
 ### What are some of the ways in which precipitation measurements differ among different products at select sites?
 
 * The precipitation measurements  differ substantially in correlation, cumulative volume, and landslide-triggering storm volume.
-* Example sites in @fig:cumultative demonstrate some different degrees and types of variation that occurred at various sites.
+* Example sites in @fig:cumulative demonstrate some different degrees and types of variation that occurred at various sites.
 *  As shown in @fig:cumulative,  products that share data sources such as the IMERG products are sometimes but not always more similar to each other than to other products.
 
-![Cumulative precipitation measurements at selected landslide sites for the 30 days before the event. The precipitation is variable across the different products, and the selected sites each demonstrate diverse types of variability. Panel (a) shows a site where no landslide-triggering precipitation was detected by any product, suggesting a location error in the landslide record. In panel (b), the IMERG Early product reports nearly 50mm less cumulative precipitation leading into the landslide-triggering storm, but then makes up the difference by detecting much more precipitation immediately before the landslide. Panel (c) shows similar measurements among all products while in panel (d) there is a wide spread of approximately two-thirds the maximum total amount of precipitation. Finally, in panel (e) all products are well correlated, but the volumes do not match.](example_landslide_precipitation.png){#fig:cumulative}
+![Cumulative precipitation measurements at selected landslide sites for the 30 days before the event. The precipitation is variable across the different products, and the selected sites each demonstrate diverse types of variability. Panel (a) shows a site where no landslide-triggering precipitation was detected by any product, suggesting a location error in the landslide record. In panel (b), the IMERG Early product reports nearly 50mm less cumulative precipitation leading into the landslide-triggering storm, but then makes up the difference by detecting much more precipitation immediately before the landslide. Panel (c) shows similar measurements among all products while in panel (d) there is a wide spread of approximately two-thirds the maximum total amount of precipitation. Finally, in panel (e) all products are well correlated, but the volumes do not match.](/Users/elsaculler/GoogleDrive/research/landslide.hydromet.sync/figures/example_landslide_precipitation.png){#fig:cumulative}
 
 ## Precipitation comparison for landslide-triggering storms
 
@@ -126,7 +126,7 @@ FIGURE 1: map of sites with overlaid graphs showing precipitation product compar
 * IMERG Early has by some 300mm the highest precipitation measurements in millimeters.
 * The range of z-scores for each product is comparable, suggesting that each product is an outlier at some sites
 
-![Rank and z-score for day-of-landslide precipitation as measured by each product. The IMERG products tend to have higher rank than MRMS, which typically exceeds NLDAS-2 measurements. The z-scores reflect the same order, but also a similar range of variability across all products. ](summary_statistic-1605241421850.png)
+![Rank and z-score for day-of-landslide precipitation as measured by each product. The IMERG products tend to have higher rank than MRMS, which typically exceeds NLDAS-2 measurements. The z-scores reflect the same order, but also a similar range of variability across all products. ](/Users/elsaculler/Documents/research/landslide.hydromet.git/landslide_hydromet_paper.assets/summary_statistic.png)
 
 ### How does each precipitation product capture key elements of landslide-triggering storms?
 
@@ -136,11 +136,9 @@ FIGURE 1: map of sites with overlaid graphs showing precipitation product compar
 * Among the verified locations, there are not as many low values either close to the mean or outliers.
 * There are also fewer high return periods among the ground-based products MRMS and NLDAS-2 among the verified locations
 
-![Storm characteristics as measured by each product along with trend lines. The IMERG products measure higher peak hourly intensities, which is likely at least partially due to the shorter 30-minute time step. The higher peak intensities are also reflected in longer return periods. In general there appears to be good agreement among products on the depth and duration of storms, with the exception of outlying low measurements.](scatter_ensemble_mean.png)
+![Storm characteristics as measured by each product along with trend lines. The IMERG products measure higher peak hourly intensities, which is likely at least partially due to the shorter 30-minute time step. The higher peak intensities are also reflected in longer return periods. In general there appears to be good agreement among products on the depth and duration of storms, with the exception of outlying low measurements.](/Users/elsaculler/Documents/research/landslide.hydromet.git/landslide_hydromet_paper.assets/scatter_ensemble_mean.png)
 
-![](scatter_ensemble_mean_exact.png)
-
-* TABLE 2: Bias and variability for volume and intensity for each product; for exact locations only; and for matched spatial/temporal/both resolutions
+![](/Users/elsaculler/Documents/research/landslide.hydromet.git/landslide_hydromet_paper.assets/scatter_ensemble_mean_exact.png)
 
 ### Can peak intensity account for relatively high return period storms causing landslides?
 
@@ -166,7 +164,20 @@ FIGURE 1: map of sites with overlaid graphs showing precipitation product compar
 
 ![](intensity_duration_verified.png)
 
-* TABLE 2: True positives, true negatives, false positives, false negatives, and threat score for each product and threshold (For exact locations only  and matched resolutions in parentheses)
+
+
+| Product         | Include  | **Hits** | **Misses** | **Threat score** | **Hit ratio** | **False alarm ratio** |
+| --------------- | -------- | -------- | ---------- | ---------------- | ------------- | --------------------- |
+| GPM IMERG Early | All      | 114      | 62         | 0.00676598       | 0.6477273     | 0.2694975             |
+|                 | Verified | 44       | 21         | 0.006588799      | 0.6769231     | 0.2980977             |
+| GPM IMERG Final | All      | 117      | 60         | 0.00631068       | 0.6610169     | 0.3074026             |
+|                 | Verified | 45       | 19         | 0.006249132      | 0.7031250     | 0.3389533             |
+| NLDAS-2         | All      | 114      | 40         | 0.01433421       | 0.7402597     | 0.2213864             |
+|                 | Verified | 45       | 14         | 0.014768625      | 0.7627119     | 0.2228354             |
+| MRMS            | All      | 130      | 26         | 0.02492331       | 0.8333333     | 0.2433511             |
+|                 | Verified | 52       | 7          | 0.023245418      | 0.8813559     | 0.2635528             |
+
+Table: Threat score, hit ratio, and false alarm ratio for each product and the Guzzetti (2008) Intensity Duration Threshold {#tbl:threat}
 
 ## Resolution
 
