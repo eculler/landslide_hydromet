@@ -57,13 +57,20 @@ In @sec:methods, we will discuss landslide site and precipitation product select
 
 # Methods {#sec:methods}
 
-## Study domain and landslide site selection
+For this study we compared the precipitation at landslide sites first by examining trends in the variability and bias of landslide-triggering storm characteristics relative to other measurement and then by computing the skill of several established models in predicting landslides using different precipitation products. Rainfall-triggered landslide sites were chosen from the NASA Global Landslide Catalog and verified where possible using satellite imagery (see {@sec:site_selection}). Next we retrieved precipitation from four different products (see {@sec:precip_data}) for the landslide locations and the temporal domain of the study. The precipitation time series were split into individual storms, and characteristics of total depth, duration, intensity, peak intensity, and return period were calculated ({@sec:compute_storms}). Finally, intensity-duration curves were applied and the hit ratios and false alarm ratios were computed for each model-product combination ({@sec:compute_idt_scores}). 
 
-![Map of all landslide sites colored by whether or not the location was verified using aerial satellite imagery.](landslide_hydromet_paper.assets/site_map.png)
+## Study domain and landslide site selection {#sec:site_selection}
+
+Landslides were selected from the NASA Global Landslide Catalog (GLC) [CITE]. The selection criteria were that the landslides had to be triggered by some sort of rainfall, had to be within the US or Canada, had to have occurred  in or after 2015, and had to have a location accuracy of $10$ km or more accurate. In total, 257 landslides were selected. Of those landslides, 81 were also verified by manually locating a scarp in satellite images; the remaining landslides could not be verified to have occurred near the location specified by the NASA GLC. {@Fig:site_map} shows the included sites with the verified sites indicated in white. Many of the sites fall near the West coast, likely due to the many population centers there close to mountainous regions. The verified landslides seem to be spatially distriubuted proportionate to the distribution of the full selection of landslides.
+
+
+![Map of all landslide sites colored by whether or not the location was verified using aerial satellite imagery.](landslide_hydromet_paper.assets/site_map.png){#fig:site_map}
 
 ## Precipitation data sources {#sec:precip_data}
 
-### Ground-based precipitation gauges
+Four gridded precipitation datasets were selected to use this study with the goal of choosing datasets that use each of the three principle measurement methods: gauges,  ground-based radar, and satellite. In addition, we focused on products that have undergone extensive verification, with a preference for those that covered at least the continental US at a minimum of hourly measurements and a reasonably high resolution grid among the available sources ($0.125^o$ or finer). Finally, we included products with multiple latencies where available.
+
+### North American Land Data Assimilation System version 2 (NLDAS-2) forcing dataset
 
 * Measure precipitation directly
 * Rain gauges are typically considered reference measurements because they the most direct measurement of precipitation [@tapiadorGlobalPrecipitationMeasurement2012]. 
@@ -85,7 +92,7 @@ In @sec:methods, we will discuss landslide site and precipitation product select
 | Integrated Multi-satellitE Retrievals for  Global precipitation measurement (IMERG) early run [@houGlobalPrecipitationMeasurement2014] | Global network of satellites unified by measurements from a single reference radar/radiometer satellite. | $.1^o$ (~10 km)    | 30 minutes          | 4 hours                            |
 | Integrated Multi-satellitE Retrievals for  Global precipitation measurement (IMERG) final run [@houGlobalPrecipitationMeasurement2014] | In addition to the satellite data included in the IMERG early run, the final run includes late-arriving microwave overpasses, monthly gauge-based adjustments, and an algorithm that interpolates forward as well as backward in time. | $.1^o$ (~10 km)    | 30 minutes          | 3.5 months                         |
 | Multi-Radar Multi-Sensor (MRMS) [@zhangMultiRadarMultiSensorMRMS2015] | Integrates data from radars, satellites, precipitation gages, and other sensors to provide real-time decision support | 1 km               | 2 minutes           | < 5 minutes                        |
-| National Land Data Assimilation System version 2 (NLDAS-2) forcing  [@xiaContinentalscaleWaterEnergy2012] | Disaggregation of Climate Prediction Center  daily precipitation using bias-corrected radar | $.125^o$ (~ 12 km) | 1 hour              | 4 days                             |
+| North American Land Data Assimilation System version 2 (NLDAS-2) forcing  [@xiaContinentalscaleWaterEnergy2012] | Disaggregation of Climate Prediction Center  daily precipitation using bias-corrected radar | $.125^o$ (~ 12 km) | 1 hour              | 4 days                             |
 | NOAA High-Resolution Rapid Refresh (HRRR) model [@alexanderHourlyUpdatedUS2016] | Numerical Weather Prediction with radar assimilation.        | $3$ km             | 1 hour              | 1-36 hour forecasts updated hourly |
 
 : 3 Precipitation products that will be used to characterize the degree of hydrologic uncertainty present immediately before and during landslide events {#tbl:products}
