@@ -6,13 +6,14 @@ author:
   - Toby Minear
   - Kristy Tiampo
   - Ben Livneh
-abstract: "Rainfall-triggered landslides result in numerous casualties and extensive damage each year in populated mountainous regions. There are many sources of uncertainty that present challenges to skillful predictions and therefore effective mitigation of these destructive natural disasters. One of the largest source of uncertainty in landslide probability comes from the volume and spatial distribution of precipitation volume and intensity during and immediately preceding the landslide event. A key challenge for practitioners is selecting among the wide range of precipitation measurements across different available datasets. Here we investigate the degree of precipitation uncertainty in these landslide-triggering storm events and the impact of that uncertainty on predicted landslide probability using established operational models. First, we compare the average intensity, peak intensity at the smallest interval available, duration and NOAA Atlas return periods of the landslide-triggering storms, at 257 landslide locations across the continental US and Canada. Precipitation data are taken from five products that cover disparate measurement methods: near real-time and post-processed satellite (Global Precipitation Mission IMERG Early and Final calibrated precipitation), radar (Multi-Radar Multi-Sensor gauge bias-corrected precipitation), gauge (North American Land Data Assimilation System v. 2 Forcing precipitation), and numerical weather prediction (High-Resolution Rapid Refresh real-time precipitation). These products also cover a range of spatial and temporal resolutions as well as spatial extent and real-time or near real-time availability. In order to evaluate the effects of resolution on the results, we also included a comparison of each dataset re-gridded to match the coarsest spatial and temporal resolution (NLDAS2). Landslide-triggering precipitation was found to vary extensively on the basis of the measurement source with the depth of individual storm events diverging by as much as 247 mm with an average range of 38 mm. Peak intensity measurements, which is also potentially influential in triggering landslides, were also highly variable with an average range of 8.8 mm/hr and at times as much as 72 mm/hr.  Next, we compare the intensity and duration of storms at landslide sites to existing published Intensity-Duration Thresholds to determine which products acheive the highest Equitable Threat Score for landslide predictions using these existing models. Finally, we discuss the implications of precipitation uncertainty in the context of real-time landslide predictions, indentifying strengths and weaknesses of different products and approaches."
+abstract: "Extreme precipitation can have profound consequences for communities, resulting in flooding and rainfall-triggered landslides, causing casualties and extensive damage each year. A key challenge to understanding and predicting these natural hazards comes from uncertainties in the depth and intensity of precipitation preceding the landslide event. Practitioners and researchers must select among a wide range of precipitation products, often with little guidance. Here we investigate the degree of precipitation uncertainty across multiple precipitation products for a large set of landslide-triggering storm events and assess the impact of uncertainties on predicted landslide probability using published intensity-duration thresholds. First, we compare the average intensity, peak intensity at the smallest interval available, duration and NOAA Atlas return periods of the landslide-triggering storms, at 257 landslide locations across the continental US and Canada. Precipitation data are taken from five products that cover disparate measurement methods: near real-time and post-processed satellite (Global Precipitation Mission IMERG Early and Final calibrated precipitation), radar (Multi-Radar Multi-Sensor gauge bias-corrected precipitation), gauge (North American Land Data Assimilation System v. 2 Forcing precipitation), and numerical weather prediction (High-Resolution Rapid Refresh real-time precipitation). These products also cover a range of spatial and temporal resolutions as well as spatial extent and real-time or near real-time availability. Landslide-triggering precipitation was found to vary extensively on the basis of the measurement source with the depth of individual storm events diverging by as much as 247 mm with an average range of 38 mm. Peak intensity measurements, which is also potentially influential in triggering landslides, were also highly variable with an average range of 8.8 mm/hr and at times as much as 72 mm/hr.  Next, we compare the intensity and duration of storms at landslide sites to existing published Intensity-Duration Thresholds to determine which products achieve the highest Equitable Threat Score for landslide predictions using these existing models. Finally, we discuss the implications of precipitation uncertainty in the context of real-time landslide predictions, to provide guidance for practitioners and researchers on strengths and weaknesses of different products and approaches."
 
 output:
   docx:
     output: output/landslide_hydromet_paper.docx
     filter: 
       - pandoc-crossref
+      - pandoc-citeproc
     citeproc: true
 
 bibliography: hydromet.bib
@@ -20,9 +21,47 @@ bibliography: hydromet.bib
 
 # Introduction
 
-In spite of the destructive nature of landslides, these events are challenging to forecast [@kirschbaumSatelliteBasedAssessmentRainfallTriggered2018]. There are many sources of uncertainty that contribute to poor landslide predictions such as anthropogenic modifications to the area and the subsurface structure of the slope. However, perhaps the largest source of uncertainty in landslide probability estimates, is hydrologic uncertainty, here defined as uncertainty in the volume and spatial distribution of both antecedent soil moisture and precipitation during and immediately preceding the event [@chowdhuryUncertaintiesRainfallinducedLandslide2002]. The key challenge is the wide range of values represented in different available precipitation datasets ranging across in situ observations, remotely sensed retrievals, and numerical weather prediction models.  The goal of this chapter is to investigate the role of precipitation uncertainty, and subsequently the uncertainty in modeled soil saturation, in the uncertainty of a contributing to landslide probability.
+In spite of the destructive nature of landslides, these events remain challenging to forecast [@kirschbaumSatelliteBasedAssessmentRainfallTriggered2018]. There are many sources of uncertainty that contribute to poor landslide predictions such as soil property, vegetation, and anthropogenic modifications to surface and subsurface soil structure. Perhaps the largest source of uncertainty in landslide probability estimates, is hydrologic uncertainty, here defined as uncertainty in the depth and intensity of liquid precipitation leading up to the event [@chowdhuryUncertaintiesRainfallinducedLandslide2002]. A confounding factor is the wide range precipitation datasets ranging from in situ observations, ground-based radar and remotely sensed  retrievals. The goal of this analysis is to investigate the role of precipitation uncertainty and subsequently the uncertainty in landslide risks. A greater understanding areas of relative agreement and divergence across products may provide guidance to practitioners and researchers choosing precipitation products for studying landslides.
 
 ## Precipitation sensors and estimates
+
+The precipitation products chosen for this inter-comparison represent three broad categories of precipitation measurements as their primary component: precipitation gauges, ground-based radar, and microwave satellite. Precipitation gauges operate by periodically measuring how much precipitation has landed in a bucket. Their main strength is they directly measure the amount of water that lands in the bucket, but nonetheless they suffer from spatial and temporal inconsistencies as a result of wind [@pollockQuantifyingMitigatingWindInduced2018], instrument design [@duchonUsingHighSpeedPhotography2014, @duchonUndercatchTippingbucketGauges2010], poor instrument placement [@voseImprovedHistoricalTemperature2014], lack representativeness of the surrounding area, and global sensor density [@kiddHowMuchEarth2017]. Ground-based radar can detect precipitation based on propagation and backscatter of radar, and therefore can detect variation in precipitation potentially hundreds of kilometers away. Like any indirect measurement of precipitation, radar must convert the radar signal to precipitation volume and to remove the influence of other objects from buildings or insects in the radar's path [@fornasieroImpactCombinedBeam, @bousquetObservationsImpactsUpstream2003, @nikahdReviewUncertaintySources2016]. Most ground-based radars use multiple bands of radar and multiple polarities in order to compute the  raindrop shape and size distributions used in the processing, which is an advantage of ground-based radar over many satellite sensors [@chandrasekarPOTENTIALROLEDUALPOLARIZATION2008]. Satellites can use any of a number of sensors to detect precipitation including active and passive microwave, infrared, radar, or any combination, and they can also be deployed in geostationary or low Earth orbits that cover particular regions at particular intervals. The key advantage of satellite-based precipitation measurements is that unlike ground-based sensors they can provide frequent, spatially homogenous, global precipitation measurements, although typically multiple satellites are required to develop such a product [@tapiadorGlobalPrecipitationMeasurement2012]. However, since each type of satellite-based sensor has its own set of strengths and weaknesses that are beyond the scope of this study, many of the challenges of satellite-based precipitation measurement are related to sensor calibration, bias-correction relative to ground-based measurements [@ebertMethodsVerifyingSatellite2007], and the development of algorithms for merging measurements from diverse sources [@huffmanTRMMMultisatellitePrecipitation2007].
+
+## Precipitation datasets for forecasting or nowcasting landslides
+
+Though precipitation measurements have been compared on the basis of any number of metrics in prior studies ranging from annual totals to the largest number of consecutive dry days, in this study the choice of metrics was guided by what might be useful to researchers and practitioners interested in forecasting and responding to rainfall-triggered landslides. 
+
+While some landslides are triggered by short, intense precipitation events, others are triggered by the complete saturation of the soil column that occurs over a longer period of time [@cannonWildfirerelatedDebrisFlow2005]. However, in both of these cases the triggering event occurs over the course of hours or days rather than months or years, and for some landslides the critical time period may be less than an hour of intense rainfall. As a result, we selected precipitation products with hourly or finer temporal resolution (see @sec:precip_data) and evaluated them over individual storm events. Satellite products tend to capture the higher-intensity precipitation [@sunReviewGlobalPrecipitation2018] that can be key in triggering landslides. This may be due to the measurement method or the generally higher temporal resolution of satellite products.
+
+When precipitation is used to provide warning systems or guide recovery efforts from landslides, it is important to be able to provide that information in a timely manner [@kirschbaumAdvancesLandslideNowcasting2012]. Low latency is therefore vital in a precipitation product used to forecast or nowcast landslides. This study also will assess whether the low latency comes at a cost relative to landslide forecasting  skill for the selected products.
+
+Finally, many precipitation products struggle in mountainous regions [@sunReviewGlobalPrecipitation2018], precisely where landslides are most likely to occur due to higher slopes. This study includes an analysis in the spatial variation in performance to assess the role of topography in the results.
+
+## Precipitation product comparisons
+
+@sunReviewGlobalPrecipitation2018 reviewed 30 gauge-based, satellite-based, and reanalysis global precipitation products, comparing annual precipitation estimates, 90th percentile of daily precipitation, systematic and random error for daily precipitation, and regional differences in performance. They found a great deal of variability even within the same class of product (e.g. a deviation of 300 mm in annual precipitation for some). They conclude that cross validating across multiple datasets is crucial to account for errors, and that the placement and density of gauges accounts for many of the errors in gauge-based or gauge-corrected products. 
+
+@adlerIntercomparisonGlobalPrecipitation2001 similarly analyzed 31 gauge-based, satellite-based, model-based, and climatological datasets, comparing monthly precipitation, precipitation by latitude, and inter-annual change.  They found that 'quasi-standard' products, e.g. those like the Global Precipitation Measurement mission (GPM) [@houGlobalPrecipitationMeasurement2014] that have undergone substantial testing, perform better. Additionally, they found that products incorporating both in situ and satellite information (e.g. the Global Precipitation Climatology Project [GPCP] [@adlerVersion2GlobalPrecipitation2003]) perform better than products based on a single data source.
+
+## Inter-comparison of extreme precipitation
+
+Fewer studies comparing extreme precipitation exist [@amitaiMultiplatformComparisonsRain2012, @manzanasPrecipitationVariabilityTrends2014, @hashmiComparisonSDSMLARSWG2011, @tryhornComparisonTechniquesDownscaling2011], primarily looking at extreme precipitation indicators like 90th percentile precipitation, extreme one-day precipitation and maximum number of consecutive wet days. These measures are meant to capture large storms that happen on at least an annual basis rather than storms that rise to the level of a natural disaster [@sunReviewGlobalPrecipitation2018; @manzanasPrecipitationVariabilityTrends2014]. Because this study is focusing on rainfall-triggered landslides, it will focus instead on the total storm depth, duration, average intensity, and peak intensity of precipitation events known to precede landslides in North America. 
+
+## Intensity-Duration Thresholds for landslide prediction
+
+Intensity-Duration Thresholds are a type of single-parameter statistical model used for landslide early warning systems, where rainstorms above the curve are predicted to cause landslides [@scheevelPrecipitationThresholdsLandslide2017]. The curves are typically valid in a particular region or climate and for a range of durations based on the training data [@guzzettiRainfallIntensityDuration2008]. This study will use a selection of power-law Intensity-Duration Thresholds from those included in a review by @guzzettiRainfallIntensityDuration2008 to preliminarily compare the suitability of precipitation measurements from different sources for providing early warning or near-real time support to disaster response organizations.
+
+Given the wide-ranging issues associated with precipitation observations cited above, as well as the importance of understanding and anticipating landslide events, this study presents a multi-product, multi-site analysis to understand landslide-triggering storms. We thereby address a gap in the literature when it comes to evaluating extreme precipitation through the lens of natural hazards. This work furthers the analysis by @rossiComparisonSatelliteRainfall2017 who compared gauge and satellite precipitation for the purposes of landslide modeling by additionally including a ground-based radar product and by singling out observations preceding specific landslide events.
+
+In @sec:methods, we will discuss landslide site and precipitation product selection, followed by procedures for splitting precipitation into storms and the metrics used in the comparison. @Sec:results begins with the cumulative precipitation over the 30-days preceding the landslide for 5 characteristic example sites. Next, we compare each product using storm characteristics of total depth, duration, total intensity, peak intensity, and return period. To test whether peak intensity might be accounting for low return period storms causing landslides, we compare the two. Finally, we use established intensity-duration thresholds to test which products have the best separation between landslides and other rainfall, comparing the hit ratio and the false alarm ratio for each product and threshold.
+
+# Methods {#sec:methods}
+
+## Study domain and landslide site selection
+
+![Map of all landslide sites colored by whether or not the location was verified using aerial satellite imagery.](landslide_hydromet_paper.assets/site_map.png)
+
+## Precipitation data sources {#sec:precip_data}
 
 ### Ground-based precipitation gauges
 
@@ -40,41 +79,6 @@ In spite of the destructive nature of landslides, these events are challenging t
 
 * Satellite-based sensors included in the products used in this study are active and passive microwave, infrared and radar.[@kiddGlobalPrecipitationMeasurement2020]
 * Satellites can provide global, homogeneous coverage. However, as indirect measurements of precipitation where the relationship between the measurement and precipitation can vary by season and location, satellite products require extensive validation and calibration using ground-based methods [@tapiadorGlobalPrecipitationMeasurement2012].  
-
-### Models
-
-* Numerical weather prediction is used to forecast weather conditions based on current measurements and physically-based atmospheric models.
-* Can incorporate many different types of observations and provide homogeneous and high-resolution estimates over continental scales, but nonetheless vulnerable to biases especially in conditions where the model has less skill since it is not based on current direct observations [@tapiadorGlobalPrecipitationMeasurement2012].
-
-## Precipitation datasets for near-real time landslide predictions
-
-* Low latency: landslide predictions are most useful in advance or hours after rather than weeks or months
-* Satellite products tend to capture higher-intensity precipitation [@sunReviewGlobalPrecipitation2018] that can be key in triggering landslides, particularly mudslides and debris flows [@cannonWildfirerelatedDebrisFlow2005]. This may be due to the measurement method or the generally higher temporal resolution of satellite products.
-* Many precipitation products struggle in mountainous regions [@sunReviewGlobalPrecipitation2018], precisely where landslides are most likely to occur due to higher slopes.
-
-## Precipitation product comparisons
-
-@sunReviewGlobalPrecipitation2018 reviewed 30 gauge-based, satellite-based, and reanalysis global precipitation products, comparing annual precipitation estimates, 90th percentile of daily precipitation, systematic and random error for daily precipitation, and regional differences in performance. They found a great deal of variability even within the same class of product (e.g. a deviation of 300 mm in annual precipitation for some). They conclude that cross validating across multiple datasets is crucial to account for errors, and that the placement and density of gauges accounts for many of the errors in gauge-based or gauge-corrected products. 
-
-@adlerIntercomparisonGlobalPrecipitation2001 similarly analyzed 31 gauge-based, satellite-based, model-based, and climatological datasets, comparing monthly precipitation, precipitation by latitude, and inter-annual change.  They found that 'quasi-standard' products, e.g. those like the Global Precipitation Measurement mission (GPM) [@houGlobalPrecipitationMeasurement2014] that have undergone substantial testing, perform better. Additionally, they found that products incorporating both in situ and satellite information (e.g. the Global Precipitation Climatology Project [GPCP] [@adlerVersion2GlobalPrecipitation2003]) perform better than products based on a single data source.
-
-## Inter-comparison of extreme precipitation
-
- Of the past studies I was able to find, all focused on metrics like total annual or monthly volume and variability. A few looked at extreme precipitation indicators such as 90th percentile precipitation, extreme 1-day precipitation and maximum number of consecutive wet days, but these measures are meant to capture large storms that happen on at least an annual basis rather than storms that rise to the level of a natural disaster [@sunReviewGlobalPrecipitation2018; @manzanasPrecipitationVariabilityTrends2014]. Because this study is focusing on rainfall-triggered landslides, it will focus instead on the total storm depth, duration, average intensity, and peak intensity of some of the most extreme precipitation in North America. 
-
-## Intensity-Duration Thresholds for landslide prediction
-
-* Intensity-Duration Thresholds are a type of single-parameter statistical model used for landslide early warning systems, where rainstorms above the curve are predicted to cause landslides [@scheevelPrecipitationThresholdsLandslide2017].
-* [@guzzettiRainfallIntensityDuration2008] reviewed published Intensity-Duraion Thresholds worldwide.
-* This study will use a selection of power-law Intensity-Duration Thresholds to compare the suitability of precipitation measurements from different sources for providing early warning or near-realtime support to disaster response organizations.
-
-# Methods
-
-## Study domain and site selection
-
-![Map of all landslide sites colored by whether or not the location was verified using aerial satellite imagery.](/Users/elsaculler/Documents/research/landslide.hydromet.git/landslide_hydromet_paper.assets/site_map.png)
-
-## Precipitation product selection
 
 | Precipitation product                                        | Description                                                  | Spatial Resolution | Temporal resolution | Typical Latency                    |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------ | ------------------- | ---------------------------------- |
@@ -106,7 +110,7 @@ In spite of the destructive nature of landslides, these events are challenging t
 * Intensity-Duration thresholds are simple landslide models whereby a threshold is defined as a power law of the storm duration, and raw or normalized intensities above the threshold predict a landslide. Thresholds were obtained from [@guzzettiRainfallIntensityDuration2008], who compiled them from the literature. Thresholds were used on applicable subsets of the data based on climate or other conditions.
 * Computed the hit ratio, false alarm ratio, and threat score for each product and threshold.
 
-# Results
+# Results {#sec:results}
 
 ## Precipitation comparison for typical storms
 
@@ -116,7 +120,7 @@ In spite of the destructive nature of landslides, these events are challenging t
 * Example sites in @fig:cumulative demonstrate some different degrees and types of variation that occurred at various sites.
 *  As shown in @fig:cumulative,  products that share data sources such as the IMERG products are sometimes but not always more similar to each other than to other products.
 
-![Cumulative precipitation measurements at selected landslide sites for the 30 days before the event. The precipitation is variable across the different products, and the selected sites each demonstrate diverse types of variability. Panel (a) shows a site where no landslide-triggering precipitation was detected by any product, suggesting a location error in the landslide record. In panel (b), the IMERG Early product reports nearly 50mm less cumulative precipitation leading into the landslide-triggering storm, but then makes up the difference by detecting much more precipitation immediately before the landslide. Panel (c) shows similar measurements among all products while in panel (d) there is a wide spread of approximately two-thirds the maximum total amount of precipitation. Finally, in panel (e) all products are well correlated, but the volumes do not match.](/Users/elsaculler/GoogleDrive/research/landslide.hydromet.sync/figures/example_landslide_precipitation.png){#fig:cumulative}
+![Cumulative precipitation measurements at selected landslide sites for the 30 days before the event. The precipitation is variable across the different products, and the selected sites each demonstrate diverse types of variability. Panel (a) shows a site where no landslide-triggering precipitation was detected by any product, suggesting a location error in the landslide record. In panel (b), the IMERG Early product reports nearly 50mm less cumulative precipitation leading into the landslide-triggering storm, but then makes up the difference by detecting much more precipitation immediately before the landslide. Panel (c) shows similar measurements among all products while in panel (d) there is a wide spread of approximately two-thirds the maximum total amount of precipitation. Finally, in panel (e) all products are well correlated, but the volumes do not match.](example_landslide_precipitation.png){#fig:cumulative}
 
 ## Precipitation comparison for landslide-triggering storms
 
@@ -126,7 +130,7 @@ In spite of the destructive nature of landslides, these events are challenging t
 * IMERG Early has by some 300mm the highest precipitation measurements in millimeters.
 * The range of z-scores for each product is comparable, suggesting that each product is an outlier at some sites
 
-![Rank and z-score for day-of-landslide precipitation as measured by each product. The IMERG products tend to have higher rank than MRMS, which typically exceeds NLDAS-2 measurements. The z-scores reflect the same order, but also a similar range of variability across all products. ](/Users/elsaculler/Documents/research/landslide.hydromet.git/landslide_hydromet_paper.assets/summary_statistic.png)
+![Rank and z-score for day-of-landslide precipitation as measured by each product. The IMERG products tend to have higher rank than MRMS, which typically exceeds NLDAS-2 measurements. The z-scores reflect the same order, but also a similar range of variability across all products. ](landslide_hydromet_paper.assets/summary_statistic.png)
 
 ### How does each precipitation product capture key elements of landslide-triggering storms?
 
@@ -136,9 +140,9 @@ In spite of the destructive nature of landslides, these events are challenging t
 * Among the verified locations, there are not as many low values either close to the mean or outliers.
 * There are also fewer high return periods among the ground-based products MRMS and NLDAS-2 among the verified locations
 
-![Storm characteristics as measured by each product along with trend lines. The IMERG products measure higher peak hourly intensities, which is likely at least partially due to the shorter 30-minute time step. The higher peak intensities are also reflected in longer return periods. In general there appears to be good agreement among products on the depth and duration of storms, with the exception of outlying low measurements.](/Users/elsaculler/Documents/research/landslide.hydromet.git/landslide_hydromet_paper.assets/scatter_ensemble_mean.png)
+![Storm characteristics as measured by each product along with trend lines. The IMERG products measure higher peak hourly intensities, which is likely at least partially due to the shorter 30-minute time step. The higher peak intensities are also reflected in longer return periods. In general there appears to be good agreement among products on the depth and duration of storms, with the exception of outlying low measurements.](landslide_hydromet_paper.assets/scatter_ensemble_mean.png)
 
-![](/Users/elsaculler/Documents/research/landslide.hydromet.git/landslide_hydromet_paper.assets/scatter_ensemble_mean_exact.png)
+![](landslide_hydromet_paper.assets/scatter_ensemble_mean_exact.png)
 
 ### Can peak intensity account for relatively high return period storms causing landslides?
 
