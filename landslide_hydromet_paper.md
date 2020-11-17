@@ -147,27 +147,27 @@ Table: Threat score, hit ratio, and false alarm ratio for each product and the @
 
 | Product         | Include  | **Hits** | **Misses** | **Hit ratio** | **False alarm ratio** |
 | --------------- | -------- | -------- | ---------- | ------------- | --------------------- |
-| GPM IMERG Early | All      | 114      | 62         | 0.648         | 0.269                 |
-|                 | Verified | 44       | 21         | 0.677         | 0.298                 |
-| GPM IMERG-Final | All      | 117      | 60         | 0.661         | 0.307                 |
-|                 | Verified | 45       | 19         | 0.703         | 0.339                 |
-| NLDAS-2         | All      | 114      | 40         | 0.740         | 0.221                 |
-|                 | Verified | 45       | 14         | 0.763         | 0.223                 |
-| MRMS            | All      | 130      | 26         | 0.833         | 0.243                 |
-|                 | Verified | 52       | 7          | 0.881         | 0.264                 |
+| GPM IMERG Early | All      | 69       | 77         | 0.473         | 0.107                 |
+|                 | Verified | 31       | 28         | 0.525         | 0.126                 |
+| GPM IMERG-Final | All      | 76       | 69         | 0.524         | 0.135                 |
+|                 | Verified | 33       | 23         | 0.589         | 0.160                 |
+| NLDAS-2         | All      | 89       | 42         | 0.679         | 0.184                 |
+|                 | Verified | 36       | 19         | 0.655         | 0.177                 |
+| MRMS            | All      | 52       | 41         | 0.559         | 0.208                 |
+|                 | Verified | 26       | 15         | 0.634         | 0.210                 |
 
 Table: Threat score, hit ratio, and false alarm ratio for each product and the @cannonStormRainfallConditions2008 intensity-duration threshold for burned areas. Since most of these sites were not burned, this threshold tends to capture more false alarms {#tbl:threat_cannon}
 
 | Product         | Include  | **Hits** | **Misses** | **Hit ratio** | **False alarm ratio** |
 | --------------- | -------- | -------- | ---------- | ------------- | --------------------- |
-| GPM IMERG Early | All      | 114      | 62         | 0.648         | 0.269                 |
-|                 | Verified | 44       | 21         | 0.677         | 0.298                 |
-| GPM IMERG-Final | All      | 117      | 60         | 0.661         | 0.307                 |
-|                 | Verified | 45       | 19         | 0.703         | 0.339                 |
-| NLDAS-2         | All      | 114      | 40         | 0.740         | 0.221                 |
+| GPM IMERG Early | All      | 80       | 66         | 0.548         | 0.161                 |
+|                 | Verified | 35       | 24         | 0.593         | 0.187                 |
+| GPM IMERG-Final | All      | 89       | 56         | 0.614         | 0.200                 |
+|                 | Verified | 54       | 39         | 0.581         | 0.251                 |
+| NLDAS-2         | All      | 97       | 34         | 0.740         | 0.236                 |
 |                 | Verified | 45       | 14         | 0.763         | 0.223                 |
-| MRMS            | All      | 130      | 26         | 0.833         | 0.243                 |
-|                 | Verified | 52       | 7          | 0.881         | 0.264                 |
+| MRMS            | All      | 54       | 39         | 0.581         | 0.251                 |
+|                 | Verified | 42       | 13         | 0.764         | 0.232                 |
 
 Table: Threat score, hit ratio, and false alarm ratio for each product and the @clarizia1996sui intensity-duration threshold. {#tbl:threat_clarizia}
 
