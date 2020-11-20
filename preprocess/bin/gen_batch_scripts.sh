@@ -1,13 +1,13 @@
 #!/bin/bash
 PRECIPNAME="$1"
-LOGLEVEL=info
+LOGLEVEL=debug
 TEMPLATE="$2"
 LON_NAME=lon
 LAT_NAME=lat
 TIME_NAME=time
 X_NAME=$LON_NAME
 Y_NAME=$LAT_NAME
-TO360=0
+TO360='false'
 PRECIPCRS='EPSG:4326'
 ENGINE=netcdf4
 
@@ -21,11 +21,13 @@ if [ $TEMPLATE == "test" ]
 then
   TEMPLATE_PATH="batch_template_test.txt"
   MONTH=10
+  DAY=01
   STARTYEAR=2018
   ENDYEAR=2018
 else
   TEMPLATE_PATH="batch_template.txt"
   MONTH=""
+  DAY=""
   STARTYEAR=2014
   ENDYEAR=2020
 fi
@@ -33,8 +35,9 @@ mkdir -p $WORKDIR $OUTDIR $BATCHDIR
 
 # Make batch script for each year
 for ((YEAR=STARTYEAR; YEAR<=ENDYEAR; YEAR++)); do
-  for ((MONTH=1; MONTH<=12; MONTH++)); do
+  for ((MON=1; MON<=12; MON++)); do
 
+MONTH=$(printf "%02d" $MON)
 BATCHPATH=${BATCHDIR}/${PRECIPNAME}.${TEMPLATE}.${YEAR}${MONTH}.batch
 case ${PRECIPNAME} in
   nldas)
@@ -50,18 +53,24 @@ case ${PRECIPNAME} in
     PRECIP_NAME=precipitationCal
     ;;
   mrms)
-    PRECIP="precipitation/MRMS/GaugeCorr_QPE_01H_00.00_${YEAR}${MONTH}\*-\*.nc"
-    PRECIP_NAME=precip
+    PRECIP="precipitation/MRMS.1hour/GaugeCorr_QPE_01H_00.00_${YEAR}${MONTH}${DAY}\*.grib2"
+    PRECIP_NAME=paramId_0
+    LON_NAME='longitude'
+    LAT_NAME='latitude'
+    X_NAME=$LON_NAME
+    Y_NAME=$LAT_NAME
+    TO360='true'
+    ENGINE="cfgrib"
     ;;
   hrrr)
     PRECIP="precipitation/HRRR/${YEAR}/${YEAR}${MONTH}\*/hrrrx_qpf_${YEAR}${MONTH}\*.grib2"
-    PRECIP_NAME="APCP_P8_L1_GLC0_acc"
-    ENGINE="pynio"
-    LAT_NAME="gridlat_0"
-    TIME_NAME="forecast_time0"
-    X_NAME="xgrid_0"
-    Y_NAME="ygrid_0"
-    TO360=1
+    PRECIP_NAME="tp"
+    ENGINE="cfgrib"
+    LON_NAME="longitude"
+    LAT_NAME="latitude"
+    X_NAME="x"
+    Y_NAME="y"
+    TO360=true
     ;;
 esac
 
@@ -72,7 +81,7 @@ cp ${SRCDIR}/${TEMPLATE_PATH} ${BATCHPATH}
 # Write command to start container, run python script
 cat >> ${BATCHPATH} << EOL
 singularity run --bind /scratch/summit ${WORKDIR}/hydrological.processes.202011.sif bash -c \\
-  'conda activate hydrometenv && python ${SRCDIR}/landslide_precip.py ${DATADIR}/${PRECIP} ${DATADIR}/landslide/landslides.verified.csv ${OUTDIR}/${PRECIPNAME}.${YEAR}.csv ${LON_NAME} ${LAT_NAME} ${PRECIP_NAME} ${TIME_NAME} ${X_NAME} ${Y_NAME} ${TO360} ${ENGINE} "${PRECIPCRS}" ${LOGLEVEL}'
+  'conda activate hydrometenv && python ${SRCDIR}/landslide_precip.py ${DATADIR}/${PRECIP} ${DATADIR}/landslide/landslides.verified.csv ${OUTDIR}/${PRECIPNAME}.${YEAR}${MONTH}.csv ${LON_NAME} ${LAT_NAME} ${PRECIP_NAME} ${TIME_NAME} ${X_NAME} ${Y_NAME} ${TO360} ${ENGINE} "${PRECIPCRS}" ${LOGLEVEL}'
 EOL
 
 done
