@@ -1,5 +1,5 @@
 from scipy.spatial import cKDTree
-import concurrent.futu
+import concurrent.futures
 import dask
 import datetime
 import geopandas as gpd
@@ -11,6 +11,28 @@ import os
 import pandas as pd
 import sys
 import xarray as xr
+
+def get_precip(precip, group_count, i, count,
+               x_name, y_name, precip_name, time_name,
+               loc_i, xi, yi):
+    slide_precip = precip[{x_name: xi[loc_i], y_name: yi[loc_i]}]
+
+    # To DataFrame
+    slide_precip_df = pd.DataFrame(
+        {'precipitation': slide_precip[precip_name].values},
+        index = slide_precip[time_name].values)
+
+    # Add location identifier to the index
+    slide_precip_df['slide.id'] = i
+    slide_precip_df = slide_precip_df.set_index(['slide.id'],
+                                                append=True)
+
+    # Write to file
+    slide_precip_df.to_csv(
+        out_path, mode='a', header=(count==1 and group_count==1),
+        index_label=('datetime', 'slide.id'))
+    logging.debug(slide_precip_df.sort_index().head())
+    return
 
 def pull_data(precip_path, landslide_path, out_path,
               lon_name='lon', lat_name='lat',
@@ -57,7 +79,7 @@ def pull_data(precip_path, landslide_path, out_path,
         raise ValueError('No files at {}'.format(precip_path))
 
     precip_groups = []
-    ngroups = 8
+    ngroups = 2
     group_size = math.ceil(len(files) / ngroups)
     group_start = 0
     for group in range(ngroups):
@@ -65,7 +87,7 @@ def pull_data(precip_path, landslide_path, out_path,
         group_end = min(group_start + group_size, len(files))
         file_group = files[group_start:group_end]
         group_start = group_end
-        
+
         # Open group files
         precip_group = xr.open_mfdataset(
             file_group, engine=engine,
@@ -91,14 +113,14 @@ def pull_data(precip_path, landslide_path, out_path,
     precip_example = precip_groups[0]
     logging.info('Building KD-Tree...')
     if x_is_lon:
-        xv, yv = np.meshgrid(precip_example[lon_name].values, 
+        xv, yv = np.meshgrid(precip_example[lon_name].values,
                              precip_example[lat_name].values)
-        xi, yi = np.indices((precip_example.sizes[lon_name], 
+        xi, yi = np.indices((precip_example.sizes[lon_name],
                              precip_example.sizes[lat_name]))
     else:
         xv = precip_example[lon_name].values
         yv = precip_example[lat_name].values
-        xi, yi = np.indices((precip_example.sizes[x_name], 
+        xi, yi = np.indices((precip_example.sizes[x_name],
                              precip_example.sizes[y_name]))
 
     xv = xv.flatten()
@@ -110,55 +132,42 @@ def pull_data(precip_path, landslide_path, out_path,
     # Pull data for landslide locations
     count=1
     with concurrent.futures.ProcessPoolExecutor() as pool:
-    for i, row in slide.iterrows():
-        logging.info('Processing landslide {}, id {}'.format(count, i))
+        for i, row in slide.iterrows():
+            logging.info('Processing landslide {}, id {}'.format(count, i))
 
-        # Skip out-of-bounds landslides
-        if (row.lon > np.amax(precip_example[lon_name].values) or
-            row.lon < np.amin(precip_example[lon_name].values) or
-            row.lat > np.amax(precip_example[lat_name].values) or
-            row.lat < np.amin(precip_example[lat_name].values)):
-            count +=1
-            logging.info('Landslide out of bounds')
+            # Skip out-of-bounds landslides
+            if (row.lon > np.amax(precip_example[lon_name].values) or
+                row.lon < np.amin(precip_example[lon_name].values) or
+                row.lat > np.amax(precip_example[lat_name].values) or
+                row.lat < np.amin(precip_example[lat_name].values)):
+                count +=1
+                logging.info('Landslide out of bounds')
+                logging.info('Location: {}, {}'.format(row.lon, row.lat))
+                continue
+
+            # Find index of closest location
+            loc_i = kdt.query((row.lon, row.lat))[1]
+            logging.debug('Location index: {}'.format(loc_i))
             logging.info('Location: {}, {}'.format(row.lon, row.lat))
-            continue
+            logging.info('Closest cell: {}, {}'.format(xv[loc_i], yv[loc_i]))
+            logging.debug('Closest index: {}, {}'.format(xi[loc_i], yi[loc_i]))
+            pd.DataFrame(
+                {'lat': [row.lat], 'lon': [row.lon], 'kdt': [loc_i],
+                 'closest_lat': [yv[loc_i]], 'closest_lon': [xv[loc_i]],
+                 'closest_lat_i': [yi[loc_i]], 'closest_lon_i': [xi[loc_i]]},
+                index = [i]
+            ).to_csv(out_slide_path, mode='a', header=count==1,
+                     index_label='id')
 
-        # Find index of closest location
-        loc_i = kdt.query((row.lon, row.lat))[1]
-        logging.debug('Location index: {}'.format(loc_i))
-        logging.info('Location: {}, {}'.format(row.lon, row.lat))
-        logging.info('Closest cell: {}, {}'.format(xv[loc_i], yv[loc_i]))
-        logging.debug('Closest index: {}, {}'.format(xi[loc_i], yi[loc_i]))
-        pd.DataFrame(
-            {'lat': [row.lat], 'lon': [row.lon], 'kdt': [loc_i],
-             'closest_lat': [yv[loc_i]], 'closest_lon': [xv[loc_i]],
-             'closest_lat_i': [yi[loc_i]], 'closest_lon_i': [xi[loc_i]]},
-            index = [i]
-        ).to_csv(out_slide_path, mode='a', header=count==1, index_label='id')
+            # Pull precipitation data
+            group_count = range(1, ngroups + 1)
+            get_slide_precip = lambda precip, group_count: get_precip(
+                precip, group_count, i, count,
+                x_name, y_name, precip_name, time_name,
+                loc_i, xi, yi)
+            pool.map(get_slide_precip, precip_groups, group_count)
 
-        # Pull precipitation data
-        group_count = 1
-        for precip in precip_groups:
-            slide_precip = precip[{x_name: xi[loc_i], y_name: yi[loc_i]}]
-
-            # To DataFrame
-            slide_precip_df = pd.DataFrame(
-                {'precipitation': slide_precip[precip_name].values},
-                index = slide_precip[time_name].values)
-
-            # Add location identifier to the index
-            slide_precip_df['slide.id'] = i
-            slide_precip_df = slide_precip_df.set_index(['slide.id'], append=True)
-
-            # Write to file
-            slide_precip_df.to_csv(
-                out_path, mode='a', header=(count==1 and group_count==1),
-                index_label=('datetime', 'slide.id'))
-
-            logging.debug(slide_precip_df.sort_index().head())
-            group_count += 1
-
-        count += 1
+            count += 1
 
 if __name__ == '__main__':
     # Get command line arguments
