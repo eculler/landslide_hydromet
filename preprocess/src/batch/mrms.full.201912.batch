@@ -1,0 +1,18 @@
+#!/bin/bash
+
+#SBATCH --nodes=1
+#SBATCH --time=23:59:00
+#SBATCH --partition=shas
+#SBATCH --account ucb-summit-hyd
+#SBATCH --qos condo
+#SBATCH --ntasks=4
+#SBATCH --job-name=hydromet
+#SBATCH --output=/projects/elcu4811/landslide.hydromet/log/hydromet.%j.out
+
+# Load modules
+module load singularity/3.6.4
+
+# Run script
+export BASH_ENV=/projects/elcu4811/landslide.hydromet/.bashrc
+singularity run --bind /scratch/summit /projects/elcu4811/landslide.hydromet/landslide.hydromet.git/preprocess/hydrological.processes.202011.sif bash -c \
+  'conda activate hydrometenv && python /projects/elcu4811/landslide.hydromet/landslide.hydromet.git/preprocess/src/landslide_precip.py /scratch/summit/elcu4811/landslide.hydromet.data/precipitation/MRMS.1hour/GaugeCorr_QPE_01H_00.00_201912\*.grib2 /scratch/summit/elcu4811/landslide.hydromet.data/landslide/landslides.verified.csv /projects/elcu4811/landslide.hydromet/landslide.hydromet.out/mrms/mrms.201912.csv longitude latitude paramId_0 time longitude latitude true cfgrib "EPSG:4326" debug'
